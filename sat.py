@@ -133,7 +133,7 @@ def sat(clauses, length=0):
             if n in clause:
                 two_sat.append(copy.copy(clause))
                 two_sat[-1].remove(n)
-        return sorted(two_sat)
+        return sorted(two_sat) if length == 0 else two_sat
 
     def sat_3sat(clauses):
         nb_vars = max(abs(x) for clause in clauses for x in clause)
