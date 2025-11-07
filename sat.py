@@ -154,8 +154,8 @@ def sat(clauses, length=0):
         two_sat = []
         for clause in clauses:
             if n in clause:
-                clause.remove(n)
-                two_sat.append(clause)
+                two_sat.append(copy.copy(clause))
+                two_sat[-1].remove(n)
         return sorted(two_sat)
 
     def sat_3sat(clauses):
@@ -182,7 +182,7 @@ def sat(clauses, length=0):
         sat = []
         nb_vars = max(abs(lit) for clause in clauses for lit in clause)
         for i in range(1, nb_vars+1):
-            sat = fact_3sat(copy.deepcopy(clauses), i)
+            sat = fact_3sat(clauses, i)
             unval = un2sat(sat)
             if  unval == 0:
                 bin_add(i)
@@ -194,7 +194,7 @@ def sat(clauses, length=0):
                         bin_add([min(i,j),max(i,j)])
 
         for i in range(-nb_vars, 0):
-            sat = fact_3sat(copy.deepcopy(clauses), i)
+            sat = fact_3sat(clauses, i)
             unval = un2sat(sat)
             if  unval == 0:
                 bin_add(i)
@@ -249,7 +249,7 @@ def sat(clauses, length=0):
         sat = []
         nb_vars = max(abs(lit) for clause in clauses for lit in clause)
         for i in range(1, nb_vars+1):
-            sat = fact_3sat(copy.deepcopy(clauses), i)
+            sat = fact_3sat(clauses, i)
             unval = un2sat(sat)
             if  unval == 0:
                 literals.add(i)
@@ -261,7 +261,7 @@ def sat(clauses, length=0):
                         two_clauses.add((min(i,j),max(i,j)))
 
         for i in range(-nb_vars, 0):
-            sat = fact_3sat(copy.deepcopy(clauses), i)
+            sat = fact_3sat(clauses, i)
             unval = un2sat(sat)
             if  unval == 0:
                 literals.add(i)
