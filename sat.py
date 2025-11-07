@@ -3,7 +3,6 @@ import copy
 
 def sat(clauses, length=0):
     
-
     def two_sat(nb_vars):
         # Determine the number of variables
         for i in literals:
@@ -317,20 +316,21 @@ def sat(clauses, length=0):
     three_sat = sat_3sat(clauses)
     nb_vars_3sat = max(abs(lit) for clause in three_sat for lit in clause)
     two_clauses, literals = [], []
-    if length == 0:
+    if length == 1:
         two_clauses, literals = set(), set()
         first_d_set(three_sat)
         if len(literals) == 0 and len(two_clauses) == 0 :
             return True
         depend_search_set(three_sat)
-    else :
+    elif length == 0:
         first_d(three_sat)
         if len(literals) == 0 and len(two_clauses) == 0 :
             return True
         depend_search(three_sat)
+    else :
+        raise ValueError("second argument in sat() can only be 0 or 1")
     return two_sat(nb_vars_3sat)[:nb_vars]
 
 if '__main__'==__name__ :
     x = [[1,2], [-1,-2], [1,3], [4,5,-3,-2,1], [4,3,5,-1]]
-    print(sat(x,1))
     print(sat(x))
