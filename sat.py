@@ -4,36 +4,24 @@ import copy
 def sat(clauses, length=0):
     
     def two_sat(nb_vars):
-        # Determine the number of variables
         for i in literals:
             bin_add([i,i])
-
-        # Initialize the graph with nodes for all possible literals
         graph = {lit: [] for i in range(1, nb_vars + 1) for lit in (i, -i)}
 
-        # Build the implication graph from the two_clauses
         for i, j in two_clauses:
             graph[-i].append(j)
             graph[-j].append(i)
-        # Find the Strongly Connected Components (SCCs)
-        # This returns a list of lists, e.g., [[3, -4], [2], [-1, 1], ...]
         sccs = tarjan(graph)
-        # *** FIX: Create a map from each literal to its component's ID ***
-        # The SCCs are returned in reverse topological order.
+
         component_map = {}
         for component_id, scc in enumerate(sccs):
             for node in scc:
                 component_map[node] = component_id
-        # Check for contradictions
         for i in range(1, nb_vars + 1):
             if component_map[i] == component_map[-i]:
-                return None  # Unsatistwo_clauses, literals = [], []fiable
-
-        # Build a valid assignment if no contradictions were found
+                return None 
         solution = []
         for i in range(1, nb_vars + 1):
-            # A variable is True if its negation's component appears before its own
-            # in the reverse topological sort (i.e., has a higher component ID).
             solution.append(component_map[-i] > component_map[i])
             
         return solution
@@ -60,37 +48,26 @@ def sat(clauses, length=0):
 
     def un2sat(clauses):
         all_literals, unass = [], []
-        # Determine the number of variables
         if clauses:
             for clause in clauses:
                 for literal in clause:
                     if abs(literal) not in all_literals:
                         all_literals.append(abs(literal))
 
-        # Initialize the graph with nodes for all possible literals
         graph = {i: [] for literal in all_literals for i in (literal, -literal)}
-        # Build the implication graph from the clauses
         for i, j in clauses:
             graph[-i].append(j)
             graph[-j].append(i)
-        # Find the Strongly Connected Components (SCCs)
-        # This returns a list of lists, e.g., [[3, -4], [2], [-1, 1], ...]
         sccs = tarjan(graph)
-        # *** FIX: Create a map from each literal to its component's ID ***
-        # The SCCs are returned in reverse topological order.
         index = {}
         for component_id, scc in enumerate(sccs):
             for node in scc:
                 index[node] = component_id
 
-
-        # Check for contradictions
         for i in all_literals:
             if index[i] == index[-i]:
-                return 0  # Unsatisfiable
-
-        # Get a un sat assignment if no contradictions were found
-        # Return value set true unsatisfies the instance.
+                return 0
+            
         for i in all_literals:
             if dfs(graph, i) :
                 unass.append(-i)
